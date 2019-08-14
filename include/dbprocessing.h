@@ -3,8 +3,6 @@
 #include <vector>
 #include <QVariantList>
 #include "dbtypes.h"
-#include "dbselector.h"
-#include "dbmanipulator.h"
 
 class DBProcessing
 {
@@ -16,8 +14,6 @@ public:
 
     std::pair<DBTypes::DBResult,
               std::vector<QVariantList>> requestTableData(DBTypes::DBTables table);
-private:
-    DBSelector m_selector;
 };
 
 #endif // DBPROCESSING_H

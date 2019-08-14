@@ -1,9 +1,8 @@
 #ifndef DBMANAGER_H
 #define DBMANAGER_H
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QMap>
 #include <QDebug>
+#include <QSqlQuery>
 #include "dbconnectionmanager.h"
 
 class DBManager

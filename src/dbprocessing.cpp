@@ -1,5 +1,10 @@
 #include "dbprocessing.h"
 
+#include "dbselector.h"
+#include "dbmanipulator.h"
+
+static DBSelector selector;
+
 DBProcessing::DBProcessing()
 {
 #ifdef INSERT_TEST_DATA
@@ -47,6 +52,6 @@ void DBProcessing::insertTestData()
 std::pair<DBTypes::DBResult, std::vector<QVariantList>> DBProcessing::requestTableData(DBTypes::DBTables table)
 {
     std::vector<QVariantList> result;
-    const DBTypes::DBResult resultState {m_selector.selectAll(tableMapper.at(table), result)};
+    const DBTypes::DBResult resultState {selector.selectAll(tableMapper.at(table), result)};
     return std::make_pair(resultState, std::move(result));
 }

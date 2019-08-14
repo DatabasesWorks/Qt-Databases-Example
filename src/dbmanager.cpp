@@ -1,4 +1,6 @@
 #include "dbmanager.h"
+#include <QSqlError>
+#include <QDebug>
 
 using namespace DBTypes;
 
