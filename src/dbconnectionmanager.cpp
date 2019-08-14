@@ -98,9 +98,10 @@ bool DBConnectionManager::setUpTables()
         QSqlQuery {
             "CREATE TABLE IF NOT EXISTS Contacts"
             "("
-            "Name TEXT UNIQUE NOT NULL,"
-            "Surname INTEGER NOT NULL,"
-            "PhoneNumber TEXT"
+            "Name TEXT,"
+            "Surname INTEGER,"
+            "PhoneNumber TEXT,"
+            "UNIQUE(Name, Surname)"
             ")"
         }
     };

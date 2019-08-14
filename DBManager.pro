@@ -4,6 +4,8 @@ CONFIG += c++11
 TARGET = DBManager
 TEMPLATE = lib
 
+DEFINES += BUILD_TESTS
+DEFINES += INSERT_TEST_DATA
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Refer to the documentation for the
@@ -30,11 +32,9 @@ DESTDIR = $$PWD/bin
 INCLUDEPATH += $$PWD/include
 
 HEADERS += \
-    include/dbconnectionmanager.h
-    include/dbselector.h
-    include/dbmanager.h
-    include/dbtypes.h
-    include/dbprocessing.h
+    include/dbconnectionmanager.h \
+    include/dbselector.h \
+    include/dbmanager.h \
+    include/dbtypes.h \
+    include/dbprocessing.h \
     include/dbmanipulator.h
-
-QMAKE_LFLAGS += -Wl,-rpath,"'$${ORIGIN}'"
