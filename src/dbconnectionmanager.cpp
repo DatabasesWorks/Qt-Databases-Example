@@ -72,7 +72,7 @@ bool DBConnectionManager::setUpWorkspace()
 #ifdef BUILD_TESTS
     const QString databaseName {"TestDB"};
 #else
-    const QString databaseName {"GoodsDB"};
+    const QString databaseName {"ContactsDB"};
 #endif
     const QString location {QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)};
     const QString fullPath {location + "/" + databaseName};
@@ -96,42 +96,12 @@ bool DBConnectionManager::setUpTables()
 
     std::vector<QSqlQuery> creationQueries = {
         QSqlQuery {
-            "CREATE TABLE IF NOT EXISTS Products"
+            "CREATE TABLE IF NOT EXISTS Contacts"
             "("
             "Name TEXT UNIQUE NOT NULL,"
-            "CategoryId INTEGER NOT NULL,"
-            "Brand TEXT,"
-            "Amount INTEGER DEFAULT 0,"
-            "Price INTEGER DEFAULT 1,"
-            "BarCode INTEGER);"
-        },
-        QSqlQuery {
-            "CREATE TABLE IF NOT EXISTS Categories"
-            "("
-            "Name TEXT UNIQUE NOT NULL,"
-            "ProviderId INTEGER NOT NULL);"
-        },
-        QSqlQuery {
-            "CREATE TABLE IF NOT EXISTS Providers"
-            "("
-            "Name TEXT NOT NULL,"
-            "Surname TEXT NOT NULL,"
-            "Identity INTEGER NOT NULL,"
-            "PhoneNumber TEXT,"
-            "UNIQUE (Name, Surname));"
-        },
-        QSqlQuery {
-            "CREATE VIEW IF NOT EXISTS CategoryView AS "
-            "SELECT Categories.rowid, Categories.Name, Providers.Name as ProviderName, Providers.Surname as ProviderSurname, Providers.rowid as ProviderId "
-            "FROM Categories, Providers "
-            "WHERE Categories.ProviderId = Providers.rowid; "
-        },
-        QSqlQuery {
-            "CREATE VIEW IF NOT EXISTS GoodsView AS "
-            "SELECT Products.rowid, Products.Name, Products.CategoryId, Categories.Name as CategoryName, Products.Brand, "
-            "Products.Amount, Products.Price, Products.BarCode "
-            "FROM Products, Categories "
-            "WHERE Products.CategoryId = Categories.rowid "
+            "Surname INTEGER NOT NULL,"
+            "PhoneNumber TEXT"
+            ")"
         }
     };
 

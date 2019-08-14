@@ -9,9 +9,7 @@ enum class DBResult {
 };
 
 enum class DBTables {
-    Goods = 1,
-    Categories = 2,
-    Providers = 3
+    Contacts = 1
 };
 
 enum class DBState {

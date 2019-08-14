@@ -12,14 +12,14 @@ DBSelector::DBSelector()
 
 DBResult DBSelector::selectAll(const std::string& tableName, std::vector<QVariantList>& returnData)
 {
-    const std::string query = generateQuery(tableName);
+    const std::string query {generateQuery(tableName)};
     DBResult result;
     QSqlQuery resultQuery;
     std::tie(result, resultQuery) = m_dbManager.execute(query);
 
     if (result == DBResult::OK) {
         while (resultQuery.next()) {
-            const auto& resultRecord = resultQuery.record();
+            const QSqlRecord& resultRecord = resultQuery.record();
             QVariantList result;
             for (int i = 0; i < resultRecord.count(); ++i) {
                 result.push_back(resultRecord.value(i));
