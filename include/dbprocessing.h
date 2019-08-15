@@ -12,8 +12,7 @@ public:
     void insertTestData();
 #endif
 
-    std::pair<DBTypes::DBResult,
-              std::vector<QVariantList>> requestTableData(DBTypes::DBTables table);
+    std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > requestTableData(DBTypes::DBTables table);
 };
 
 #endif // DBPROCESSING_H

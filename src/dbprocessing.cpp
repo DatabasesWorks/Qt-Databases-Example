@@ -37,7 +37,7 @@ void DBProcessing::insertTestData()
 }
 #endif
 
-std::pair<DBTypes::DBResult, std::vector<QVariantList>> DBProcessing::requestTableData(DBTypes::DBTables table)
+std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> DBProcessing::requestTableData(DBTypes::DBTables table)
 {
     std::vector<QVariantList> result;
     const DBTypes::DBResult resultState {selector.selectAll(tableMapper.at(table), result)};
