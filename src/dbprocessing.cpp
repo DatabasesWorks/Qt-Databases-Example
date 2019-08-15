@@ -8,7 +8,6 @@ static DBSelector selector;
 DBProcessing::DBProcessing()
 {
 #ifdef INSERT_TEST_DATA
-    insertTestData();
 #endif
 }
 
@@ -39,7 +38,4 @@ void DBProcessing::insertTestData()
 
 std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> DBProcessing::requestTableData(DBTypes::DBTables table)
 {
-    std::vector<QVariantList> result;
-    const DBTypes::DBResult resultState {selector.selectAll(tableMapper.at(table), result)};
-    return std::make_pair(resultState, std::move(result));
 }
