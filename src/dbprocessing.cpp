@@ -3,7 +3,6 @@
 #include "dbselector.h"
 #include "dbmanipulator.h"
 
-static DBSelector selector;
 
 DBProcessing::DBProcessing()
 {
@@ -39,6 +38,7 @@ void DBProcessing::insertTestData()
 
 std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> DBProcessing::requestTableData(DBTypes::DBTables table)
 {
+    static DBSelector selector;
     std::vector<QVariantList> result;
     const DBTypes::DBResult resultState {selector.selectAll(tableMapper.at(table), result)};
     return std::make_pair(resultState, std::move(result));
