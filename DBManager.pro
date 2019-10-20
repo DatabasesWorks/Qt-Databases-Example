@@ -18,23 +18,29 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    src/dbconnectionmanager.cpp \
-    src/dbselector.cpp \
-    src/dbmanager.cpp \
-    src/dbprocessing.cpp \
-    src/dbmanipulator.cpp
+    src/ConnectionManager.cpp \
+    src/Selector.cpp \
+    src/Executor.cpp \
+    src/Processor.cpp \
+    src/Manipulator.cpp
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
 
-DESTDIR = $$PWD/bin
+DESTDIR = ../shared/lib
 
 INCLUDEPATH += $$PWD/include
 
 HEADERS += \
-    include/dbconnectionmanager.h \
-    include/dbselector.h \
-    include/dbmanager.h \
+    include/ConnectionManager.h \
+    include/Selector.h \
+    include/Executor.h \
     include/dbtypes.h \
-    include/dbprocessing.h \
-    include/dbmanipulator.h
+    include/dbmapper.h \
+    include/Processor.h \
+    include/Manipulator.h
+
+headers.path = ../shared/include
+headers.files = include/dbtypes.h \
+                include/Processor.h
+INSTALLS += headers

@@ -1,20 +1,19 @@
-#ifndef DBINSERTER_H
-#define DBINSERTER_H
-#include "dbmanager.h"
+#pragma once
+#include "Executor.h"
 #include "dbtypes.h"
 
-class DBManipulator
+namespace db
+{
+class Manipulator
 {
 public:
-    DBManipulator();
-
     std::pair<DBTypes::DBResult, int> insertRow(const std::string& tableName, const QVariantList& rowData);
 
 private:
-    DBManager& m_dbManager;
+    Executor m_executor;
     std::string generateBindString(size_t paramCount) const;
     std::string generateInsertQuery(const std::string& tableName, size_t paramCount) const;
     std::string generateSetString(const QVector<QString>& columns, const QVariantList& values) const;
 };
+}
 
-#endif // DBINSERTER_H

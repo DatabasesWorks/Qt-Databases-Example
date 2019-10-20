@@ -1,19 +1,18 @@
-#ifndef DBSELECTOR_H
-#define DBSELECTOR_H
+#pragma once
 #include <QVariantList>
 #include "dbtypes.h"
-#include "dbmanager.h"
+#include "Executor.h"
 
-class DBSelector
+namespace db
+{
+class Selector
 {
 public:
-    DBSelector();
     DBTypes::DBResult selectAll(const std::string& tableName,
                                 std::vector<QVariantList>& returnData);
 
 private:
-    DBManager& m_dbManager;
+    Executor m_executor;
     std::string generateQuery(const std::string& tableName) const;
 };
-
-#endif // DBSELECTOR_H
+}

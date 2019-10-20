@@ -1,4 +1,4 @@
-#include "dbconnectionmanager.h"
+#include "ConnectionManager.h"
 #include <QDebug>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -6,7 +6,8 @@
 #include <QDir>
 
 using namespace DBTypes;
-
+namespace db
+{
 namespace
 {
     class DBCloser {
@@ -17,57 +18,72 @@ namespace
     };
 }
 
-class DBConnectionManager::DBManagerPrivate {
+class ConnectionManager::DBManagerPrivate {
 public:
-    mutable bool m_isValid {true};
     std::unique_ptr<QSqlDatabase, DBCloser> m_database;
     std::string m_dbPath;
     DBState m_state {DBState::OK};
+    bool m_isValid {true};
+
+    bool setUp();
+    bool setUpWorkspace();
+    bool setUpTables();
+
+    void setIsValid(bool isValid);
 };
 
-std::string DBConnectionManager::databasePath() const
+ConnectionManager& ConnectionManager::instance()
+{
+    static ConnectionManager instance {};
+    return instance;
+}
+
+std::string ConnectionManager::databasePath() const
 {
     return m_d->m_dbPath;
 }
 
-DBState DBConnectionManager::state() const
+DBState ConnectionManager::state() const
 {
     return m_d->m_state;
 }
 
-bool DBConnectionManager::setUp()
+bool ConnectionManager::DBManagerPrivate::setUp()
 {
     const QString driver {"QSQLITE"};
 
-    if (!QSqlDatabase::isDriverAvailable(driver)) {
-        m_d->m_state = DBState::ERROR_NO_DRIVER;
+    if (!QSqlDatabase::isDriverAvailable(driver))
+    {
+        m_state = DBState::ERROR_NO_DRIVER;
         qWarning() << "Driver " << driver << " is not available.";
         return false;
     }
 
-    if (!setUpWorkspace()) {
-        m_d->m_state = DBState::ERROR_WORKSPACE;
-        qWarning() << "Workspace setup failed!";
+    if (!setUpWorkspace())
+    {
+        m_state = DBState::ERROR_WORKSPACE;
+        qCritical() << "Workspace setup failed!";
         return false;
     }
 
     auto* db = new QSqlDatabase {QSqlDatabase::addDatabase(driver)};
-    m_d->m_database.reset(db);
-    m_d->m_database->setDatabaseName(QString::fromStdString(m_d->m_dbPath));
+    m_database.reset(db);
+    m_database->setDatabaseName(QString::fromStdString(m_dbPath));
 
-    qDebug() << "Database name: " << m_d->m_database->databaseName();
+    qDebug() << "Database name: " << m_database->databaseName();
 
-    if (!m_d->m_database->open()) {
-        m_d->m_state = DBState::ERROR_OPENING;
-        qWarning() << "Error in opening DB " << m_d->m_database->databaseName()
-                   << " reason: " <<  m_d->m_database->lastError().text();
+    if (!m_database->open())
+    {
+        m_state = DBState::ERROR_OPENING;
+        qCritical() << "Error in opening DB " << m_database->databaseName()
+                   << " reason: " <<  m_database->lastError().text();
         return false;
     }
 
     return setUpTables();
 }
 
-bool DBConnectionManager::setUpWorkspace()
+bool ConnectionManager::DBManagerPrivate::setUpWorkspace()
 {
 #ifdef BUILD_TESTS
     const QString databaseName {"TestDB"};
@@ -77,12 +93,14 @@ bool DBConnectionManager::setUpWorkspace()
     const QString location {QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)};
     const QString fullPath {location + "/" + databaseName};
 
-    m_d->m_dbPath = fullPath.toStdString();
+    m_dbPath = fullPath.toStdString();
 
     QDir dbDirectory {location};
-    if (!dbDirectory.exists()) {
+    if (!dbDirectory.exists())
+    {
+        const bool creationResult {dbDirectory.mkpath(location)};
         qWarning() << "DB directory not exist, creating result: "
-                   << dbDirectory.mkpath(location);
+                   << creationResult;
     }
 
     qDebug() << "Data path: " << fullPath;
@@ -90,7 +108,7 @@ bool DBConnectionManager::setUpWorkspace()
     return dbDirectory.exists();
 }
 
-bool DBConnectionManager::setUpTables()
+bool ConnectionManager::DBManagerPrivate::setUpTables()
 {
     bool result {true};
 
@@ -106,13 +124,17 @@ bool DBConnectionManager::setUpTables()
         }
     };
 
-    for (auto& query : creationQueries) {
-        if (!query.exec()) {
+    for (auto& query : creationQueries)
+    {
+        if (!query.exec())
+        {
             result = false;
-            m_d->m_state = DBState::ERROR_TABLES;
+            m_state = DBState::ERROR_TABLES;
             qWarning() << "Table creation failed. Reason: "
                        << query.lastError();
-        } else {
+        }
+        else
+        {
             qWarning() << "Table successfully created! Query: \n" << query.lastQuery();
         }
     }
@@ -120,22 +142,24 @@ bool DBConnectionManager::setUpTables()
     return result;
 }
 
-void DBConnectionManager::setIsValid(bool isValid)
+void ConnectionManager::DBManagerPrivate::setIsValid(bool isValid)
 {
-    m_d->m_isValid = isValid;
+    m_isValid = isValid;
 }
 
-bool DBConnectionManager::isValid() const
+bool ConnectionManager::isValid() const
 {
     return m_d->m_isValid && m_d->m_database->isValid();
 }
 
-DBConnectionManager::DBConnectionManager()
+ConnectionManager::ConnectionManager()
     : m_d {new DBManagerPrivate {}}
 {
-    setIsValid(setUp());
+    const bool setupResult {m_d->setUp()};
+    m_d->setIsValid(setupResult);
 }
 
-DBConnectionManager::~DBConnectionManager()
+ConnectionManager::~ConnectionManager()
 {
+}
 }

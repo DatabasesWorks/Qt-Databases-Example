@@ -1,28 +1,21 @@
-#include "dbmanipulator.h"
+#include "Manipulator.h"
 #include <sstream>
+#include "dbmapper.h"
 
 using namespace DBTypes;
 
-namespace {
-static const std::map<std::string, std::string> tablesMapping = {
-    {"Contacts", "Name, Surname, PhoneNumber"},
-};
-}
-
-DBManipulator::DBManipulator()
-    : m_dbManager {DBManager::instance()}
+namespace db
 {
-}
 
-std::pair<DBResult, int> DBManipulator::insertRow(const std::string& tableName, const QVariantList& rowData)
+std::pair<DBResult, int> Manipulator::insertRow(const std::string& tableName, const QVariantList& rowData)
 {
     const std::string& query {generateInsertQuery(tableName, rowData.size())};
-    const std::pair<DBResult, QSqlQuery>& result {m_dbManager.execute(query, rowData)};
+    const std::pair<DBResult, QSqlQuery>& result {m_executor.execute(query, rowData)};
     return std::make_pair(result.first,
                           result.second.lastInsertId().toInt());
 }
 
-std::string DBManipulator::generateBindString(size_t paramCount) const
+std::string Manipulator::generateBindString(size_t paramCount) const
 {
     std::ostringstream bindings;
     std::fill_n(std::ostream_iterator<std::string>(bindings),
@@ -35,7 +28,7 @@ std::string DBManipulator::generateBindString(size_t paramCount) const
     return bindString;
 }
 
-std::string DBManipulator::generateInsertQuery(const std::string& tableName, size_t paramCount) const
+std::string Manipulator::generateInsertQuery(const std::string& tableName, size_t paramCount) const
 {
     std::string query = "INSERT INTO " + tableName +  " (" + tablesMapping.at(tableName) + ")"
                         " VALUES (";
@@ -44,4 +37,5 @@ std::string DBManipulator::generateInsertQuery(const std::string& tableName, siz
     query += ")";
 
     return query;
+}
 }
