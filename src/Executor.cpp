@@ -14,6 +14,11 @@ Executor::Executor()
 
 std::pair<DBResult, QSqlQuery> Executor::execute(const std::string& queryText, const QVariantList& args)
 {
+    if (!m_connectionManager.isValid())
+    {
+        qCritical() << "Database is not valid, skip";
+        return std::make_pair(DBResult::FAIL, QSqlQuery {});
+    }
     QSqlQuery query {QString::fromStdString(queryText)};
 
     for(int i = 0; i < args.size(); ++i)
