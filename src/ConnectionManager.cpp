@@ -14,6 +14,7 @@ namespace
     public:
         void operator() (QSqlDatabase* db) {
             db->close();
+            QSqlDatabase::removeDatabase(QSqlDatabase::defaultConnection);
         }
     };
 }
