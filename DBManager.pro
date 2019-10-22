@@ -1,7 +1,6 @@
 QT -= gui
 QT += core sql
 CONFIG += c++11
-TARGET = DBManager
 TEMPLATE = lib
 
 DEFINES += BUILD_TESTS
@@ -27,7 +26,7 @@ SOURCES += \
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
 
-DESTDIR = ../shared/lib
+DESTDIR = $$PWD/../shared/lib/
 
 INCLUDEPATH += $$PWD/include
 
@@ -43,4 +42,5 @@ HEADERS += \
 headers.path = ../shared/include
 headers.files = include/dbtypes.h \
                 include/Processor.h
+
 INSTALLS += headers
